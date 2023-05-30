@@ -4,6 +4,35 @@ import os
 import numpy as np
 from keras.utils import pad_sequences
 
+"""
+Ce script permet de parser un fichier .osu, et de récolter toutes les données sur les objets présent dans une beatmap.
+Ces données sont ensuite normalisées (one-hot encoding, normalisation, padding, etc..) pour faire en sorte qu'elles soient
+au bon format pour être utilisées pas le LSTM.
+
+Ces données sont ensuite séparées en chunk par intervals de temps : 
+
+Par exemple si l'interval de temps choisi est 1000 ms, le premier chunk contiendra les objets de la beatmap (circle,slider,..)
+ayant lieu entre 0 et 1000 ms, le deuxième entre 1000ms et 2000ms, etc..
+
+
+Format des données :
+
+Un objet (circle,slider) correspond aux données suivantes : 
+
+161 features (Beatmap file)
+Time (Normalized)
+x (Normalized)
+y (Normalized)
+Type (One hot encoding)
+Slider type (One hot encoding)
+Slider length (One hot encoding)
+Slider points (capped to 75 -> 75 * (x,y) coordinates = 150)
+
+
+"""
+
+
+
 LENGTH_THRESHOLD = 360000 
 SLIDER_LENGTH_THRESHOLD = 3000
 MAX_SLIDER_POINTS = 75

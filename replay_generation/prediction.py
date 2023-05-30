@@ -3,6 +3,13 @@ import torch
 from LSTMModel import LSTMModel
 from parse_osu_map_file import parse_beatmap_file_and_chunk
 
+
+"""
+Script permettant de faire une prédiction pour un fichier de beatmap donnée (beatmap_path)
+
+"""
+
+
 # Model parameters
 input_size = 161
 hidden_size = 50
@@ -10,12 +17,12 @@ num_layers = 1
 output_size = 5
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-# Define your normalization parameters
+# Normalization used : 
 X_UPPER_BOUND = 600
 X_LOWER_BOUND = -180
 Y_LOWER_BOUND = -82
 Y_UPPER_BOUND = 407
-LENGTH_THRESHOLD = 360000  # Replace ... with the appropriate value
+LENGTH_THRESHOLD = 360000  
 
 def reverse_normalize(y):
     """
@@ -35,8 +42,6 @@ def predict_new_beatmap(beatmap_path, model):
     input_data = input_data.reshape(-1, 1, input_data.shape[-1])
     input_data = torch.tensor(input_data).float().to(device)
 
-    # # Add an extra dimension for the batch size
-    # input_data = input_data.unsqueeze(0)
 
     # Forward pass
     output_data = model(input_data)
@@ -58,4 +63,6 @@ model = model.to(device)
 beatmap_path = "D:\\Osu\\Songs\\393995 toby fox - Quiet Water\\toby fox - Quiet Water (Intelli) [Calm].osu"
 
 output_data = predict_new_beatmap(beatmap_path, model)
-print(output_data)
+
+
+output_data = map()

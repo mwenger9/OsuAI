@@ -9,6 +9,11 @@ import shutil
 from tqdm import tqdm
 
 
+"""
+Used for semi supervised learning.
+
+"""
+
 def row_xyxy_to_xywh(row, img_width, img_height):
     xmin, ymin, xmax, ymax = row["xmin"], row["ymin"], row["xmax"], row["ymax"]
     center_x = (xmin + xmax) / 2.0

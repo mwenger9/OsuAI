@@ -3,6 +3,37 @@ import numpy as np
 from coordinates_utils import normalize,X_LOWER_BOUND,X_UPPER_BOUND,Y_LOWER_BOUND,Y_UPPER_BOUND
 from keras.utils import Sequence,pad_sequences
 
+"""
+Script permettant de parser un fichier .OSR, de normaliser toutes ses données (normalisation,one-hot encoding,padding,...) 
+et de les séparer en chunks basés sur des intervals de temps.
+
+Par exemple si l'interval de temps choisi est 1000 ms, le premier chunk contiendra les données du replay
+ayant lieu entre 0 et 1000 ms, le deuxième entre 1000ms et 2000ms, etc..
+
+L'interval de temps est ensuite aligné sur les données de la beatmap correspondant au replay.
+
+Par exemple, si les premiers objets de la beatmap se situent dans l'interval de temps 2000/3000ms,
+alors les données de replay qui se passent avant ce timing seront ignorés car inutiles.
+
+De cette manière pour chaque chunk beatmap/replay on a les objets qui se situent dans ce timing
+et les actions qui se situent au meme timing dans le replay.
+
+
+Format des données pour le replay (target du LSTM):
+
+1 action du replay contient les informations suivantes :
+
+time (Normalized)
+x (Normalized)
+y (Normalized)
+Keys (One hot encoded -> [0,0] for no key, [1,0] for K1 pressed, etc..)
+
+
+
+
+"""
+
+
 
 BATCH_LENGTH = 2048
 TIME_INTERVAL = 500 # In milliseconds
@@ -29,6 +60,7 @@ def parse_osr_file(osr_file_path):
         keys = one_hot_encode_key_pressed(event.keys)
         
         event_data = np.concatenate([time_delta, x, y, keys])
+        
 
         replay_events_chunk.append(event_data.tolist())  # Convert numpy array to list before appending
 
@@ -120,7 +152,8 @@ def parse_osr_file_abs_time(osr_file_path):
         
         event_data = np.concatenate([absolute_time, x, y, keys])
 
-        replay_events_chunk.append(event_data.tolist())  # Convert numpy array to list before appending
+        if 0 <= event_data[1] <= 1 and 0 <= event_data[2] <= 1:
+            replay_events_chunk.append(event_data.tolist())  # Convert numpy array to list before appending
 
     return replay_events_chunk
 

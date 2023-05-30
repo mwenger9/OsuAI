@@ -1,25 +1,41 @@
 import torch
 from torch import nn
 
+
+"""
+Architecture LSTM utilisée pour répondre au problème
+ 
+"""
+
+
 class LSTMModel(nn.Module):
-    def __init__(self, input_size, hidden_size, num_layers, output_size):
+    def __init__(self, num_input_features, num_output_features):
         super(LSTMModel, self).__init__()
         
-        self.hidden_size = hidden_size
-        self.num_layers = num_layers
-        
-        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
-        self.fc = nn.Linear(hidden_size, output_size)
+        self.lstm = nn.LSTM(num_input_features, 64, batch_first=True)
+        self.fc1 = nn.Linear(64, 64)
+        self.fc2 = nn.Linear(64, 16)
+        self.fc3 = nn.Linear(16, num_output_features)
+        self.noise = GaussianNoise(0.2)
 
     def forward(self, x):
-        h0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device) 
-        c0 = torch.zeros(self.num_layers, x.size(0), self.hidden_size).to(x.device)
-        
-        # Forward propagate LSTM
-        out, _ = self.lstm(x, (h0, c0)) 
-        
-        # Pass each time step through the fully connected layer
-        out = self.fc(out)
-        return out
+        x, _ = self.lstm(x)
+        x = self.fc1(x)
+        x = self.noise(x)
+        x = self.fc2(x)
+        x = self.fc3(x)
+        return x
 
 
+
+
+class GaussianNoise(nn.Module):
+    def __init__(self, stddev: float = 0.1):
+        super().__init__()
+        self.stddev = stddev
+
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
+        if self.training:
+            noise = x.new_empty(x.size()).normal_(std=self.stddev)
+            return x + noise
+        return x

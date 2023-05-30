@@ -5,6 +5,14 @@ import multiprocessing
 from parse_osu_map_file import parse_beatmap_file,get_last_object_timing
 from multiprocessing import Pool
 
+
+
+"""
+Ensemble de fonctions utilisées pour nettoyer le jeu de données, afin que les données soient assez homogènes (pas d'outliers)
+
+"""
+
+
 LENGTH_THRESHOLD = 360000 # In milliseconds
 STAR_RATING_THRESHOLD = 10
 ACCURACY_THRESHOLD = 0.92

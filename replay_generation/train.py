@@ -5,6 +5,28 @@ from DatasetLoader import DataGenerator
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+
+"""
+Boucle d'entraiment du modèle.
+Récapitulatif :
+
+Modele : LSTM
+
+Input features : 161
+Output features : 5
+
+Size of one batch : 8 (Meaning beatmaps are processed 8 at a time)
+
+Loss function : MSE
+
+Optimizer : Adam
+
+
+
+"""
+
+
+
 if __name__ == "__main__":
     NUM_EPOCHS = 1
     
@@ -27,7 +49,8 @@ if __name__ == "__main__":
     num_input_features = 161
     num_output_features = 5
     print("Creating the model")
-    model = LSTMModel(input_size=num_input_features, hidden_size=50, num_layers=1, output_size=num_output_features)
+    #model = LSTMModel(input_size=num_input_features, hidden_size=50, num_layers=1, output_size=num_output_features)
+    model = LSTMModel(num_input_features=num_input_features,num_output_features=num_output_features)
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     print(f"Using device {device}")
