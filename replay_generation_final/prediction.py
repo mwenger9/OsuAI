@@ -65,7 +65,7 @@ if __name__ == "__main__":
 
     BEATMAP_PATH = "D:\\Osu\\Songs\\423527 dj TAKA - quaver\\dj TAKA - quaver (Monstrata) [Crescendo].osu"
     BEATMAP_ID = 915210
-    API_KEY = "0375dc7e7d29a37993082d62a4776c90bec512c7"
+    API_KEY = ""
 
 
 
